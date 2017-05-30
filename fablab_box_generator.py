@@ -11,17 +11,8 @@ import inkex
 from simplestyle import *
 import simplepath
 
-from fablab_lib import BaseEffect
-from fablab_box_lib import BoxEffect
-
-
-def print_(*arg):
-    f = open("fablab_debug.log", "a")
-    for s in arg:
-        s = str(unicode(s).encode('unicode_escape')) + " "
-        f.write(s)
-    f.write("\n")
-    f.close()
+from fablab_lib import BaseEffect, print_
+from fablab_box_lib import BoxEffect, BoxGenrationError
 
 
 def unsignedLong(signedLongString):
@@ -85,14 +76,15 @@ class BoxGeneratorEffect(BaseEffect, BoxEffect):
 
         fgcolor = "#FF0000"
         bgcolor = None
-
-        if(self.options.closed == 'true'):
-            for shape in self.box_with_top(self.options.path_id, centre[0], centre[1], bgcolor, fgcolor, self.options.width, self.options.depth, self.options.height, self.options.tab_size, self.options.thickness, self.options.backlash):
-                inkex.etree.SubElement(parent, inkex.addNS('path', 'svg'), shape)
-        else:
-            for shape in self.box_without_top(self.options.path_id, centre[0], centre[1], bgcolor, fgcolor, self.options.width, self.options.depth, self.options.height, self.options.tab_size, self.options.thickness, self.options.backlash):
-                inkex.etree.SubElement(parent, inkex.addNS('path', 'svg'), shape)
-
+        try:
+            if(self.options.closed == 'true'):
+                for shape in self.box_with_top(self.options.path_id, centre[0], centre[1], bgcolor, fgcolor, self.options.width, self.options.depth, self.options.height, self.options.tab_size, self.options.thickness, self.options.backlash):
+                    inkex.etree.SubElement(parent, inkex.addNS('path', 'svg'), shape)
+            else:
+                for shape in self.box_without_top(self.options.path_id, centre[0], centre[1], bgcolor, fgcolor, self.options.width, self.options.depth, self.options.height, self.options.tab_size, self.options.thickness, self.options.backlash):
+                    inkex.etree.SubElement(parent, inkex.addNS('path', 'svg'), shape)
+        except BoxGenrationError as e:
+            inkex.errormsg(e.value)
         #inkex.etree.SubElement(parent, inkex.addNS('path','svg'), ell_attribs )
 
 
