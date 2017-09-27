@@ -56,7 +56,7 @@ Exemple d'utilisation :
 
 4) Indiquez l'épaisseur du matériau (ex:6) et la hauteur de la boite (ex:50)
 5) Tout sélectionner avant d'appliquer
-            </params>
+			</param>
         </page>
     </param>
   <effect>
